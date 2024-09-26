@@ -1032,3 +1032,46 @@ public class LibraryController : BaseJellyfinApiController
         return metadataOptions is null || !metadataOptions.DisabledImageFetchers.Contains(name, StringComparison.OrdinalIgnoreCase);
     }
 }
+        }
+
+        /// <summary>
+        /// Add an external video link to the library.
+        /// </summary>
+        /// <param name="name">The name of the video.</param>
+        /// <param name="url">The URL of the external video.</param>
+        /// <param name="providerName">The name of the provider (e.g., "YouTube", "Vimeo").</param>
+        /// <response code="204">Video link added successfully.</response>
+        /// <response code="400">Invalid parameters.</response>
+        /// <response code="401">Unauthorized access.</response>
+        /// <response code="403">Forbidden access.</response>
+        /// <returns>A <see cref="NoContentResult"/> indicating success.</returns>
+        [HttpPost("ExternalVideoLinks")]
+        [Authorize(Policy = Policies.RequiresElevation)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult AddExternalVideoLink(
+            [FromQuery, Required] string name,
+            [FromQuery, Required] string url,
+            [FromQuery] string providerName)
+        {
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(url))
+            {
+                return BadRequest("Name and URL are required.");
+            }
+
+            var video = new Movie
+            {
+                Name = name,
+                ExternalVideoUrl = url,
+                Path = url, // Use the URL as the path
+                IsPlaceHolder = true,
+                ProviderIds = new Dictionary<string, string>
+                {
+                    { providerName ?? "ExternalLink", url }
+                }
+            };
+
+            _libraryManager.CreateItem(video, null);
+
+            return NoContent();
+        }
+    }

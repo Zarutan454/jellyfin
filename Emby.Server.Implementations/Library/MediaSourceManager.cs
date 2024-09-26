@@ -186,6 +186,24 @@ namespace Emby.Server.Implementations.Library
 
             list.AddRange(mediaSources);
 
+            // Check if the item has an external video URL
+            if (!string.IsNullOrEmpty(item.ExternalVideoUrl))
+            {
+                var externalSource = new MediaSourceInfo
+                {
+                    Path = item.ExternalVideoUrl,
+                    Protocol = MediaProtocol.Http,
+                    Id = $"external_{item.Id}",
+                    Name = "External Source",
+                    IsRemote = true,
+                    SupportsDirectPlay = true,
+                    SupportsDirectStream = true,
+                    SupportsTranscoding = false
+                };
+
+                list.Add(externalSource);
+            }
+
             foreach (var source in dynamicMediaSources)
             {
                 // Validate that this is actually possible
@@ -210,6 +228,7 @@ namespace Emby.Server.Implementations.Library
                 }
 
                 list.Add(source);
+            }
             }
 
             return SortMediaSources(list);

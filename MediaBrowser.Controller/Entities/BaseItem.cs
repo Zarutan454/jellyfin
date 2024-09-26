@@ -98,6 +98,7 @@ namespace MediaBrowser.Controller.Entities
             Studios = Array.Empty<string>();
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             LockedFields = Array.Empty<MetadataField>();
+            ExternalVideoUrl = string.Empty;
             ImageInfos = Array.Empty<ItemImageInfo>();
             ProductionLocations = Array.Empty<string>();
             RemoteTrailers = Array.Empty<MediaUrl>();
@@ -2607,5 +2608,10 @@ namespace MediaBrowser.Controller.Entities
 
         /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(Id);
+    }
+        /// <summary>
+        /// Gets or sets the external video URL for streaming.
+        /// </summary>
+        public string ExternalVideoUrl { get; set; }
     }
 }
