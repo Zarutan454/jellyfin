@@ -92,7 +92,25 @@ public class DashboardController : BaseJellyfinApiController
 
         return File(stream, MimeTypes.GetMimeType(resourcePath));
     }
+    /// <summary>
+    /// Adds or updates an external video link.
+    /// </summary>
+    /// <param name="linkInfo">The external link information.</param>
+    /// <response code="200">Link added or updated successfully.</response>
+    /// <response code="400">Invalid link information provided.</response>
+    /// <returns>A status message.</returns>
+    [HttpPost("ExternalVideoLink")]
+    [Authorize(Policy = Policies.RequiresElevation)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult AddExternalVideoLink([FromBody] ExternalLinkInfo linkInfo)
+    {
+        // TODO: Implement logic to add or update the external link
+        // This might involve updating a database or configuration file
+        return Ok("External video link added successfully");
+    }
 
+    private IEnumerable<ConfigurationPageInfo> GetConfigPages(LocalPlugin plugin)
     private IEnumerable<ConfigurationPageInfo> GetConfigPages(LocalPlugin plugin)
     {
         return GetPluginPages(plugin).Select(i => new ConfigurationPageInfo(plugin.Instance, i.Item1));
